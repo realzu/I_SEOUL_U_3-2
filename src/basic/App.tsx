@@ -3,19 +3,20 @@ import { ActionResult, AddNotification, CouponFormType, Notification, ProductWit
 import Toast from './components/ui/Toast';
 import { calculateCartTotal, calculateItemTotal, getRemainingStock } from './models/cart';
 import { useCart } from './hooks/useCart';
-import { useCoupon } from './models/coupon';
 import CouponForm from './components/ui/CouponForm';
 import { useSearch } from './hooks/useSearch';
 import { useProducts } from './hooks/useProducts';
+import { useCoupons } from './hooks/useCoupons';
 
 const App = () => {
   const { products, addProduct, setProducts } = useProducts();
   const { cart, addToCart, removeFromCart, updateQuantity, clearCart } = useCart();
-  const { coupons, selectedCoupon, addCoupon, deleteCoupon, applyCoupon, clearSelectedCoupon, showCouponForm, setShowCouponForm } = useCoupon();
+  const { coupons, selectedCoupon, addCoupon, deleteCoupon, applyCoupon, clearSelectedCoupon } = useCoupons();
   const { searchTerm, setSearchTerm, debouncedSearchTerm } = useSearch();
 
   const [isAdmin, setIsAdmin] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [showCouponForm, setShowCouponForm] = useState(false);
   const [activeTab, setActiveTab] = useState<'products' | 'coupons'>('products');
   const [showProductForm, setShowProductForm] = useState(false);
 
@@ -64,13 +65,7 @@ const App = () => {
     if (result.message) addNotification(result.message, result.success ? 'success' : 'error');
   }, [addNotification]);
 
-  const [totalItemCount, setTotalItemCount] = useState(0);
-  
-
-  useEffect(() => {
-    const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-    setTotalItemCount(count);
-  }, [cart]);
+  const totalItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   useEffect(() => {
     localStorage.setItem('products', JSON.stringify(products));
@@ -127,14 +122,12 @@ const App = () => {
 
   const handleCouponSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    notify(addCoupon(couponForm));
-    setCouponForm({
-      name: '',
-      code: '',
-      discountType: 'amount',
-      discountValue: 0
-    });
-    setShowCouponForm(false);
+    const result = addCoupon(couponForm);
+    notify(result);
+    if (result.success) {
+      setCouponForm({ name: '', code: '', discountType: 'amount', discountValue: 0 });
+      setShowCouponForm(false);
+    }
   };
 
   const startEditProduct = (product: ProductWithUI) => {
