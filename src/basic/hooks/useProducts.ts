@@ -13,7 +13,7 @@
 // - addProductDiscount: 할인 규칙 추가
 // - removeProductDiscount: 할인 규칙 삭제
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ActionResult, ProductWithUI } from "../../types";
 import { initialProducts } from "../constants/constants";
 
@@ -30,6 +30,19 @@ export function useProducts() {
     return initialProducts;
   });
 
+  useEffect(() => {
+      localStorage.setItem('products', JSON.stringify(products));
+    }, [products]);
+
+  const updateProduct = useCallback((productId: string, updates: Partial<ProductWithUI>) => {
+    setProducts(prev =>
+      prev.map(product =>
+        product.id === productId ? { ...product, ...updates } : product
+      )
+    );
+    return { success: true, message: '상품이 수정되었습니다.' };
+  }, []);
+
   const addProduct = useCallback((newProduct: Omit<ProductWithUI, 'id'>): ActionResult => {
     const product: ProductWithUI = {
       ...newProduct,
@@ -39,18 +52,10 @@ export function useProducts() {
     return { success: true, message: '상품이 추가되었습니다.' };
   }, []);
 
-  // const updateProductStock = useCallback((productId: string, newStock: number) => {
-    // setProducts(prev =>
-    //   prev.map(product =>
-    //     product.id === productId ? { ...product, stock: newStock } : product
-    //   )
-    // );
-  // }, []);
-
   return {
     products,
+    updateProduct,
      addProduct,
-    //  updateProductStock,
      setProducts
   }
 }

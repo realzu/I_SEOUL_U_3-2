@@ -8,7 +8,7 @@
 // - addCoupon: 새 쿠폰 추가
 // - removeCoupon: 쿠폰 삭제
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ActionResult, CartItem, Coupon } from "../../types";
 import { initialCoupons } from "../constants/constants";
 import { calculateCartTotal } from "../models/cart";
@@ -26,6 +26,10 @@ export function useCoupons() {
     return initialCoupons;
   });
   const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null);
+
+    useEffect(() => {
+      localStorage.setItem('coupons', JSON.stringify(coupons));
+    }, [coupons]);
 
   const addCoupon = useCallback((newCoupon: Coupon): ActionResult => {
     const existingCoupon = coupons.find(c => c.code === newCoupon.code);

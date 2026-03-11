@@ -24,7 +24,7 @@
 // - getRemainingStock: 재고 확인 함수 // TODO -> getRemainingStock! (cart.ts)
 // - clearCart: 장바구니 비우기 함수 // OK
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ActionResult, CartItem, ProductWithUI } from "../../types";
 import { getRemainingStock } from "../models/cart";
 
@@ -40,6 +40,14 @@ export function useCart() {
     }
     return [];
   });
+
+  useEffect(() => {
+    if (cart.length > 0) {
+      localStorage.setItem('cart', JSON.stringify(cart));
+    } else {
+      localStorage.removeItem('cart');
+    }
+  }, [cart]);
 
   const addToCart = useCallback((product: ProductWithUI): ActionResult => {
     const remainingStock = getRemainingStock(product, cart);

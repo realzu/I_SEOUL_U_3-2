@@ -1,3 +1,7 @@
+import { useCart } from "./basic/hooks/useCart";
+import { useCoupons } from "./basic/hooks/useCoupons";
+import { useProducts } from "./basic/hooks/useProducts";
+
 export interface Product {
   id: string;
   name: string;
@@ -47,3 +51,7 @@ export interface ProductWithUI extends Product {
   description?: string;
   isRecommended?: boolean;
 }
+
+export type ProductActions = Pick<ReturnType<typeof useProducts>, 'updateProduct' | 'addProduct' | 'setProducts' | 'products'>;
+export type CouponActions = Pick<ReturnType<typeof useCoupons>, 'coupons' | 'addCoupon' | 'deleteCoupon'>;
+export type CartActions = Pick<ReturnType<typeof useCart>, 'cart' | 'addToCart' | 'removeFromCart' | 'updateQuantity'>;
