@@ -53,5 +53,5 @@ export interface ProductWithUI extends Product {
 }
 
 export type ProductActions = Pick<ReturnType<typeof useProducts>, 'updateProduct' | 'addProduct' | 'setProducts' | 'products'>;
-export type CouponActions = Pick<ReturnType<typeof useCoupons>, 'coupons' | 'addCoupon' | 'deleteCoupon'>;
-export type CartActions = Pick<ReturnType<typeof useCart>, 'cart' | 'addToCart' | 'removeFromCart' | 'updateQuantity'>;
+export type CouponActions = Pick<ReturnType<typeof useCoupons>, 'coupons' | 'addCoupon' | 'deleteCoupon' | 'selectedCoupon' | 'applyCoupon' | 'clearSelectedCoupon'>;
+export type CartActions = Pick<ReturnType<typeof useCart>, 'cart' | 'addToCart' | 'removeFromCart' | 'updateQuantity' | 'clearCart'>;
