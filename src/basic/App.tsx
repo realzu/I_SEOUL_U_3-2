@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react';
 import { ActionResult, AddNotification, Notification } from '../types';
 import Toast from './components/ui/Toast';
-import { getRemainingStock } from './models/cart';
 import { useCart } from './hooks/useCart';
 import { useSearch } from './hooks/useSearch';
 import { useProducts } from './hooks/useProducts';
@@ -26,21 +25,6 @@ const App = () => {
 
   const [isAdmin, setIsAdmin] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
-
-  const formatPrice = (price: number, productId?: string): string => {
-    if (productId) {
-      const product = products.find((p) => p.id === productId);
-      if (product && getRemainingStock(product, cart) <= 0) {
-        return 'SOLD OUT';
-      }
-    }
-
-    if (isAdmin) {
-      return `${price.toLocaleString()}원`;
-    }
-
-    return `₩${price.toLocaleString()}`;
-  };
 
   const addNotification: AddNotification = useCallback(
     (message, type = 'success') => {
@@ -97,14 +81,11 @@ const App = () => {
           deleteCoupon={deleteCoupon}
           addNotification={addNotification}
           notify={notify}
-          formatPrice={formatPrice}
         />
       ) : (
         <CartPage
           products={products}
           cart={cart}
-          formatPrice={formatPrice}
-          getRemainingStock={getRemainingStock}
           debouncedSearchTerm={debouncedSearchTerm}
           notify={notify}
           addToCart={addToCart}

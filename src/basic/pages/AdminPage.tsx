@@ -9,6 +9,7 @@ import {
 } from '../../types';
 import CouponForm from '../components/ui/CouponForm';
 import { PlusIcon, TrashIcon, XIcon } from '../components/icons';
+import { formatWon } from '../utils/formatters';
 
 interface AdminPageProps {
   products: ProductWithUI[];
@@ -20,7 +21,6 @@ interface AdminPageProps {
   deleteCoupon: CouponActions['deleteCoupon'];
   addNotification: AddNotification;
   notify: (result: ActionResult) => void;
-  formatPrice: (price: number, productId?: string) => string;
 }
 
 function AdminPage({
@@ -33,7 +33,6 @@ function AdminPage({
   deleteCoupon,
   addNotification,
   notify,
-  formatPrice,
 }: AdminPageProps) {
   const [showCouponForm, setShowCouponForm] = useState(false);
   const [activeTab, setActiveTab] = useState<'products' | 'coupons'>(
@@ -203,7 +202,7 @@ function AdminPage({
                           {product.name}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {formatPrice(product.price, product.id)}
+                          {formatWon(product.price)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           <span
