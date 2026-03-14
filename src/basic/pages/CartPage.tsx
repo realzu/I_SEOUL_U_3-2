@@ -3,16 +3,19 @@ import {
   ActionResult,
   AddNotification,
   CartActions,
+  Coupon,
   CouponActions,
   ProductActions,
 } from '../../types';
-import { CartIcon, XIcon } from '../components/icons';
+import { CartIcon } from '../components/icons';
 import {
   calculateCartTotal,
   calculateItemTotal,
   getRemainingStock,
 } from '../models/cart';
 import ProductCard from '../components/ui/product/ProductCard';
+import CartProduct from '../components/ui/cart/CartProduct';
+import CouponSelectbox from '../components/ui/coupon/CouponSelectbox';
 
 interface CartPageProps {
   products: ProductActions['products'];
@@ -129,75 +132,18 @@ function CartPage({
               ) : (
                 <div className="space-y-3">
                   {cart.map((item) => {
-                    const itemTotal = calculateItemTotal(item, cart);
-                    const originalPrice = item.product.price * item.quantity;
-                    const hasDiscount = itemTotal < originalPrice;
-                    const discountRate = hasDiscount
-                      ? Math.round((1 - itemTotal / originalPrice) * 100)
-                      : 0;
-
                     return (
-                      <div
+                      <CartProduct
                         key={item.product.id}
-                        className="border-b pb-3 last:border-b-0"
-                      >
-                        <div className="flex justify-between items-start mb-2">
-                          <h4 className="text-sm font-medium text-gray-900 flex-1">
-                            {item.product.name}
-                          </h4>
-                          <button
-                            onClick={() => removeFromCart(item.product.id)}
-                            className="text-gray-400 hover:text-red-500 ml-2"
-                          >
-                            <XIcon strokeWidth={2} className="w-4 h-4" />
-                          </button>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center">
-                            <button
-                              onClick={() =>
-                                notify(
-                                  updateQuantity(
-                                    item.product.id,
-                                    item.quantity - 1,
-                                    products,
-                                  ),
-                                )
-                              }
-                              className="w-6 h-6 rounded border border-gray-300 flex items-center justify-center hover:bg-gray-100"
-                            >
-                              <span className="text-xs">−</span>
-                            </button>
-                            <span className="mx-3 text-sm font-medium w-8 text-center">
-                              {item.quantity}
-                            </span>
-                            <button
-                              onClick={() =>
-                                notify(
-                                  updateQuantity(
-                                    item.product.id,
-                                    item.quantity + 1,
-                                    products,
-                                  ),
-                                )
-                              }
-                              className="w-6 h-6 rounded border border-gray-300 flex items-center justify-center hover:bg-gray-100"
-                            >
-                              <span className="text-xs">+</span>
-                            </button>
-                          </div>
-                          <div className="text-right">
-                            {hasDiscount && (
-                              <span className="text-xs text-red-500 font-medium block">
-                                -{discountRate}%
-                              </span>
-                            )}
-                            <p className="text-sm font-medium text-gray-900">
-                              {Math.round(itemTotal).toLocaleString()}원
-                            </p>
-                          </div>
-                        </div>
-                      </div>
+                        item={item}
+                        removeFromCart={removeFromCart}
+                        updateQuantity={(quantity) => {
+                          notify(
+                            updateQuantity(item.product.id, quantity, products),
+                          );
+                        }}
+                        itemTotal={calculateItemTotal(item, cart)}
+                      />
                     );
                   })}
                 </div>
@@ -216,28 +162,14 @@ function CartPage({
                     </button>
                   </div>
                   {coupons.length > 0 && (
-                    <select
-                      className="w-full text-sm border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-blue-500"
+                    <CouponSelectbox
                       value={selectedCoupon?.code || ''}
-                      onChange={(e) => {
-                        const coupon = coupons.find(
-                          (c) => c.code === e.target.value,
-                        );
-                        if (coupon) notify(applyCoupon(coupon, cart));
-                        else clearSelectedCoupon();
+                      applyCouponAndNoti={(coupon) => {
+                        notify(applyCoupon(coupon, cart));
                       }}
-                    >
-                      <option value="">쿠폰 선택</option>
-                      {coupons.map((coupon) => (
-                        <option key={coupon.code} value={coupon.code}>
-                          {coupon.name} (
-                          {coupon.discountType === 'amount'
-                            ? `${coupon.discountValue.toLocaleString()}원`
-                            : `${coupon.discountValue}%`}
-                          )
-                        </option>
-                      ))}
-                    </select>
+                      clearSelectedCoupon={clearSelectedCoupon}
+                      coupons={coupons}
+                    />
                   )}
                 </section>
 

@@ -1,5 +1,5 @@
-import { ProductWithUI } from '../../../types';
-import { formatKRW } from '../../utils/formatters';
+import { ProductWithUI } from '../../../../types';
+import { formatKRW } from '../../../utils/formatters';
 
 interface ProductCardProps {
   product: ProductWithUI;
@@ -7,7 +7,11 @@ interface ProductCardProps {
   onAddToCart: (product: ProductWithUI) => void;
 }
 
-function ProductCard({ product, remainingStock, onAddToCart }: ProductCardProps) {
+function ProductCard({
+  product,
+  remainingStock,
+  onAddToCart,
+}: ProductCardProps) {
   return (
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">
       {/* 상품 이미지 영역 (placeholder) */}
