@@ -1,14 +1,35 @@
 import { useEffect, useMemo, useState } from 'react';
-import { XIcon } from '../icons';
+import { AddNotification, Discount, ProductWithUI } from '../../../../types';
+import { XIcon } from '../../icons';
+
+interface ProductFormType {
+  name: string;
+  price: number;
+  stock: number;
+  description: string;
+  discounts: Discount[];
+}
+
+interface ProductFormProps {
+  editingProduct: ProductWithUI | {};
+  onProductChange: (id: string, productForm: ProductFormType) => void;
+  onProductAdd: (productForm: ProductFormType) => void;
+  addNotification: AddNotification;
+  onClose: () => void;
+}
 
 // 폼 초깃값
-const initialProductForm = {
+const initialProductForm: ProductFormType = {
   name: '',
   price: 0,
   stock: 0,
   description: '',
-  discounts: [] as Array<{ quantity: number; rate: number }>,
+  discounts: [],
 };
+
+function isProductWithUI(p: ProductWithUI | {}): p is ProductWithUI {
+  return 'id' in p;
+}
 
 function ProductForm({
   editingProduct,
@@ -16,12 +37,12 @@ function ProductForm({
   onProductAdd,
   addNotification,
   onClose,
-}: any) {
+}: ProductFormProps) {
   const [productForm, setProductForm] = useState(initialProductForm);
 
   useEffect(() => {
     // 편집모드일 때는 초깃값 세팅
-    if (editingProduct && editingProduct.id) {
+    if (isProductWithUI(editingProduct)) {
       setProductForm({
         name: editingProduct.name,
         price: editingProduct.price,
@@ -39,7 +60,7 @@ function ProductForm({
 
   const handleProductSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (editingProduct && editingProduct.id) {
+    if (isProductWithUI(editingProduct)) {
       onProductChange(editingProduct.id, productForm);
     } else {
       onProductAdd(productForm);
@@ -47,7 +68,7 @@ function ProductForm({
   };
 
   const isEditMode = useMemo(() => {
-    return !!editingProduct && !!editingProduct.id;
+    return isProductWithUI(editingProduct);
   }, [editingProduct]);
 
   return (
@@ -171,12 +192,13 @@ function ProductForm({
                   type="number"
                   value={discount.quantity}
                   onChange={(e) => {
-                    const newDiscounts = [...productForm.discounts];
-                    newDiscounts[index].quantity =
-                      parseInt(e.target.value) || 0;
                     setProductForm({
                       ...productForm,
-                      discounts: newDiscounts,
+                      discounts: productForm.discounts.map((d, i) =>
+                        i === index
+                          ? { ...d, quantity: parseInt(e.target.value) || 0 }
+                          : d,
+                      ),
                     });
                   }}
                   className="w-20 px-2 py-1 border rounded"
@@ -188,12 +210,13 @@ function ProductForm({
                   type="number"
                   value={discount.rate * 100}
                   onChange={(e) => {
-                    const newDiscounts = [...productForm.discounts];
-                    newDiscounts[index].rate =
-                      (parseInt(e.target.value) || 0) / 100;
                     setProductForm({
                       ...productForm,
-                      discounts: newDiscounts,
+                      discounts: productForm.discounts.map((d, i) =>
+                        i === index
+                          ? { ...d, rate: (parseInt(e.target.value) || 0) / 100 }
+                          : d,
+                      ),
                     });
                   }}
                   className="w-16 px-2 py-1 border rounded"
@@ -205,12 +228,11 @@ function ProductForm({
                 <button
                   type="button"
                   onClick={() => {
-                    const newDiscounts = productForm.discounts.filter(
-                      (_, i) => i !== index,
-                    );
                     setProductForm({
                       ...productForm,
-                      discounts: newDiscounts,
+                      discounts: productForm.discounts.filter(
+                        (_, i) => i !== index,
+                      ),
                     });
                   }}
                   className="text-red-600 hover:text-red-800"

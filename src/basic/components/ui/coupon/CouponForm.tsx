@@ -1,21 +1,51 @@
-import { AddNotification, CouponFormType } from '../../../../types';
+import { useEffect, useState } from 'react';
+import {
+  ActionResult,
+  AddNotification,
+  CouponActions,
+  CouponFormType,
+} from '../../../../types';
 
-// CouponForm Type 지정
 interface CouponFormProps {
-  handleCouponSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-  setCouponForm: React.Dispatch<React.SetStateAction<CouponFormType>>;
-  couponForm: CouponFormType;
+  editingCoupon: CouponFormType | {};
+  addCoupon: CouponActions['addCoupon'];
+  notify: (result: ActionResult) => void;
   addNotification: AddNotification;
-  setShowCouponForm: React.Dispatch<React.SetStateAction<boolean>>;
+  onClose: () => void;
 }
 
+const initialCouponForm: CouponFormType = {
+  name: '',
+  code: '',
+  discountType: 'amount',
+  discountValue: 0,
+};
+
 function CouponForm({
-  handleCouponSubmit,
-  setCouponForm,
-  couponForm,
+  editingCoupon,
+  addCoupon,
+  notify,
   addNotification,
-  setShowCouponForm,
+  onClose,
 }: CouponFormProps) {
+  const [couponForm, setCouponForm] = useState<CouponFormType>(initialCouponForm);
+
+  useEffect(() => {
+    // 언마운트 시 폼 초기화
+    return () => {
+      setCouponForm(initialCouponForm);
+    };
+  }, [editingCoupon]);
+
+  const handleCouponSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const result = addCoupon(couponForm);
+    notify(result);
+    if (result.success) {
+      onClose();
+    }
+  };
+
   return (
     <div className="mt-6 p-4 bg-gray-50 rounded-lg">
       <form onSubmit={handleCouponSubmit} className="space-y-4">
@@ -123,7 +153,7 @@ function CouponForm({
         <div className="flex justify-end gap-3">
           <button
             type="button"
-            onClick={() => setShowCouponForm(false)}
+            onClick={onClose}
             className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
           >
             취소

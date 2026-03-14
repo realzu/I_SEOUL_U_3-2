@@ -35,22 +35,13 @@ function AdminPage({
   addNotification,
   notify,
 }: AdminPageProps) {
-  const [showCouponForm, setShowCouponForm] = useState(false);
   const [activeTab, setActiveTab] = useState<'products' | 'coupons'>(
     'products',
   );
   const [editingProduct, setEditingProduct] = useState<
     ProductWithUI | {} | null
   >(null);
-
-  // Admin
-
-  const [couponForm, setCouponForm] = useState<CouponFormType>({
-    name: '',
-    code: '',
-    discountType: 'amount' as 'amount' | 'percentage',
-    discountValue: 0,
-  });
+  const [editingCoupon, setEditingCoupon] = useState<CouponFormType | {} | null>(null);
 
   const deleteProduct = useCallback(
     (productId: string) => {
@@ -76,21 +67,6 @@ function AdminPage({
     );
 
     setEditingProduct(null);
-  };
-
-  const handleCouponSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const result = addCoupon(couponForm);
-    notify(result);
-    if (result.success) {
-      setCouponForm({
-        name: '',
-        code: '',
-        discountType: 'amount',
-        discountValue: 0,
-      });
-      setShowCouponForm(false);
-    }
   };
 
   const startEditProduct = (product: ProductWithUI) => {
@@ -260,7 +236,7 @@ function AdminPage({
 
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 flex items-center justify-center hover:border-gray-400 transition-colors">
                   <button
-                    onClick={() => setShowCouponForm(!showCouponForm)}
+                    onClick={() => setEditingCoupon({})}
                     className="text-gray-400 hover:text-gray-600 flex flex-col items-center"
                   >
                     <PlusIcon strokeWidth={2} className="w-8 h-8" />
@@ -269,13 +245,13 @@ function AdminPage({
                 </div>
               </div>
 
-              {showCouponForm && (
+              {!!editingCoupon && (
                 <CouponForm
-                  couponForm={couponForm}
-                  setCouponForm={setCouponForm}
-                  handleCouponSubmit={handleCouponSubmit}
-                  setShowCouponForm={setShowCouponForm}
+                  editingCoupon={editingCoupon}
+                  addCoupon={addCoupon}
+                  notify={notify}
                   addNotification={addNotification}
+                  onClose={() => setEditingCoupon(null)}
                 />
               )}
             </div>
