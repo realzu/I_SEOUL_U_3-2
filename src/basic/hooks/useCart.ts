@@ -24,13 +24,16 @@
 // - getRemainingStock: 재고 확인 함수 // TODO -> getRemainingStock! (cart.ts)
 // - clearCart: 장바구니 비우기 함수 // OK
 
-import { useCallback, useEffect, useState } from "react";
-import { ActionResult, CartItem, ProductWithUI } from "../../types";
-import { getRemainingStock } from "../models/cart";
+import { useCallback, useEffect, useState } from 'react';
+import { ActionResult, CartItem, ProductWithUI } from '../../types';
+import { getRemainingStock } from '../models/cart';
+import { useLocalStorage } from './useLocalStorage';
 
 export function useCart() {
+  const { getLocalStorageItem, setLocalStorageItem, removeLocalStorageItem } =
+    useLocalStorage();
   const [cart, setCart] = useState<CartItem[]>(() => {
-    const saved = localStorage.getItem('cart');
+    const saved = getLocalStorageItem('cart');
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -43,64 +46,82 @@ export function useCart() {
 
   useEffect(() => {
     if (cart.length > 0) {
-      localStorage.setItem('cart', JSON.stringify(cart));
+      setLocalStorageItem('cart', cart);
     } else {
-      localStorage.removeItem('cart');
+      removeLocalStorageItem('cart');
     }
   }, [cart]);
 
-  const addToCart = useCallback((product: ProductWithUI): ActionResult => {
-    const remainingStock = getRemainingStock(product, cart);
-    if (remainingStock <= 0) {
-      return { success: false, message: '재고가 부족합니다!' };
-    }
-
-    const existingItem = cart.find(item => item.product.id === product.id);
-    if (existingItem && existingItem.quantity + 1 > product.stock) {
-      return { success: false, message: `재고는 ${product.stock}개까지만 있습니다.` };
-    }
-
-    setCart(prevCart => {
-      if (existingItem) {
-        return prevCart.map(item =>
-          item.product.id === product.id
-            ? { ...item, quantity: existingItem.quantity + 1 }
-            : item
-        );
+  const addToCart = useCallback(
+    (product: ProductWithUI): ActionResult => {
+      const remainingStock = getRemainingStock(product, cart);
+      if (remainingStock <= 0) {
+        return { success: false, message: '재고가 부족합니다!' };
       }
-      return [...prevCart, { product, quantity: 1 }];
-    });
 
-    return { success: true, message: '장바구니에 담았습니다' };
-  }, [cart]);
+      const existingItem = cart.find((item) => item.product.id === product.id);
+      if (existingItem && existingItem.quantity + 1 > product.stock) {
+        return {
+          success: false,
+          message: `재고는 ${product.stock}개까지만 있습니다.`,
+        };
+      }
+
+      setCart((prevCart) => {
+        if (existingItem) {
+          return prevCart.map((item) =>
+            item.product.id === product.id
+              ? { ...item, quantity: existingItem.quantity + 1 }
+              : item,
+          );
+        }
+        return [...prevCart, { product, quantity: 1 }];
+      });
+
+      return { success: true, message: '장바구니에 담았습니다' };
+    },
+    [cart],
+  );
 
   const removeFromCart = useCallback((productId: string) => {
-    setCart(prevCart => prevCart.filter(item => item.product.id !== productId));
+    setCart((prevCart) =>
+      prevCart.filter((item) => item.product.id !== productId),
+    );
   }, []);
 
-  const updateQuantity = useCallback((productId: string, newQuantity: number, products: ProductWithUI[]): ActionResult => {
-    if (newQuantity <= 0) {
-      removeFromCart(productId);
+  const updateQuantity = useCallback(
+    (
+      productId: string,
+      newQuantity: number,
+      products: ProductWithUI[],
+    ): ActionResult => {
+      if (newQuantity <= 0) {
+        removeFromCart(productId);
+        return { success: true, message: '' };
+      }
+
+      const product = products.find((p) => p.id === productId);
+      if (!product) return { success: false, message: '' };
+
+      const maxStock = product.stock;
+      if (newQuantity > maxStock) {
+        return {
+          success: false,
+          message: `재고는 ${maxStock}개까지만 있습니다.`,
+        };
+      }
+
+      setCart((prevCart) =>
+        prevCart.map((item) =>
+          item.product.id === productId
+            ? { ...item, quantity: newQuantity }
+            : item,
+        ),
+      );
       return { success: true, message: '' };
-    }
-
-    const product = products.find(p => p.id === productId);
-    if (!product) return { success: false, message: '' };
-
-    const maxStock = product.stock;
-    if (newQuantity > maxStock) {
-      return { success: false, message: `재고는 ${maxStock}개까지만 있습니다.` };
-    }
-
-    setCart(prevCart =>
-      prevCart.map(item =>
-        item.product.id === productId
-          ? { ...item, quantity: newQuantity }
-          : item
-      )
-    );
-    return { success: true, message: '' };
-  }, [removeFromCart]);
+    },
+    [removeFromCart],
+  );
 
   const clearCart = useCallback(() => {
     setCart([]);
@@ -111,6 +132,6 @@ export function useCart() {
     addToCart,
     removeFromCart,
     updateQuantity,
-    clearCart
+    clearCart,
   };
 }

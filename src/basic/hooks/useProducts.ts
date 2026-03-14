@@ -13,13 +13,15 @@
 // - addProductDiscount: 할인 규칙 추가
 // - removeProductDiscount: 할인 규칙 삭제
 
-import { useCallback, useEffect, useState } from "react";
-import { ActionResult, ProductWithUI } from "../../types";
-import { initialProducts } from "../constants/constants";
+import { useCallback, useEffect, useState } from 'react';
+import { ActionResult, ProductWithUI } from '../../types';
+import { initialProducts } from '../constants/constants';
+import { useLocalStorage } from './useLocalStorage';
 
 export function useProducts() {
+  const { getLocalStorageItem, setLocalStorageItem } = useLocalStorage();
   const [products, setProducts] = useState<ProductWithUI[]>(() => {
-    const saved = localStorage.getItem('products');
+    const saved = getLocalStorageItem('products');
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -31,31 +33,37 @@ export function useProducts() {
   });
 
   useEffect(() => {
-      localStorage.setItem('products', JSON.stringify(products));
-    }, [products]);
+    setLocalStorageItem('products', products);
+  }, [products]);
 
-  const updateProduct = useCallback((productId: string, updates: Partial<ProductWithUI>) => {
-    setProducts(prev =>
-      prev.map(product =>
-        product.id === productId ? { ...product, ...updates } : product
-      )
-    );
-    return { success: true, message: '상품이 수정되었습니다.' };
-  }, []);
+  const updateProduct = useCallback(
+    (productId: string, updates: Partial<ProductWithUI>) => {
+      setProducts((prev) =>
+        prev.map((product) =>
+          product.id === productId ? { ...product, ...updates } : product,
+        ),
+      );
+      return { success: true, message: '상품이 수정되었습니다.' };
+    },
+    [],
+  );
 
-  const addProduct = useCallback((newProduct: Omit<ProductWithUI, 'id'>): ActionResult => {
-    const product: ProductWithUI = {
-      ...newProduct,
-      id: `p${Date.now()}`
-    };
-    setProducts(prev => [...prev, product]);
-    return { success: true, message: '상품이 추가되었습니다.' };
-  }, []);
+  const addProduct = useCallback(
+    (newProduct: Omit<ProductWithUI, 'id'>): ActionResult => {
+      const product: ProductWithUI = {
+        ...newProduct,
+        id: `p${Date.now()}`,
+      };
+      setProducts((prev) => [...prev, product]);
+      return { success: true, message: '상품이 추가되었습니다.' };
+    },
+    [],
+  );
 
   return {
     products,
     updateProduct,
-     addProduct,
-     setProducts
-  }
+    addProduct,
+    setProducts,
+  };
 }

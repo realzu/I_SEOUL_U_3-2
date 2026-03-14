@@ -3,7 +3,6 @@ import {
   ActionResult,
   AddNotification,
   CartActions,
-  Coupon,
   CouponActions,
   ProductActions,
 } from '../../types';
