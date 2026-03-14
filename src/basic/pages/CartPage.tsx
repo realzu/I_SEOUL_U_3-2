@@ -134,9 +134,7 @@ function CartPage({
                         item={item}
                         removeFromCart={removeFromCart}
                         updateQuantity={(quantity) => {
-                          notify(
-                            updateQuantity(item.product.id, quantity, products),
-                          );
+                          notify(updateQuantity(item.product.id, quantity));
                         }}
                         itemTotal={calculateItemTotal(item, cart)}
                       />

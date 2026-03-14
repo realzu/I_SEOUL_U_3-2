@@ -16,24 +16,24 @@ interface AdminPageProps {
   products: ProductWithUI[];
   updateProduct: ProductActions['updateProduct'];
   addProduct: ProductActions['addProduct'];
-  setProducts: ProductActions['setProducts'];
   coupons: CouponActions['coupons'];
   addCoupon: CouponActions['addCoupon'];
   deleteCoupon: CouponActions['deleteCoupon'];
   addNotification: AddNotification;
   notify: (result: ActionResult) => void;
+  deleteProduct: ProductActions['deleteProduct'];
 }
 
 function AdminPage({
   products,
   updateProduct,
   addProduct,
-  setProducts,
   coupons,
   addCoupon,
   deleteCoupon,
   addNotification,
   notify,
+  deleteProduct,
 }: AdminPageProps) {
   const [activeTab, setActiveTab] = useState<'products' | 'coupons'>(
     'products',
@@ -43,13 +43,9 @@ function AdminPage({
   >(null);
   const [editingCoupon, setEditingCoupon] = useState<Coupon | {} | null>(null);
 
-  const deleteProduct = useCallback(
-    (productId: string) => {
-      setProducts((prev) => prev.filter((p) => p.id !== productId));
-      addNotification('상품이 삭제되었습니다.', 'success');
-    },
-    [addNotification],
-  );
+  const handleProductDelete = useCallback((productId: string) => {
+    notify(deleteProduct(productId));
+  }, []);
 
   const onProductChange = (id: string, productForm: any) => {
     updateProduct(id, productForm);
@@ -175,7 +171,7 @@ function AdminPage({
                           수정
                         </button>
                         <button
-                          onClick={() => deleteProduct(product.id)}
+                          onClick={() => handleProductDelete(product.id)}
                           className="text-red-600 hover:text-red-900"
                         >
                           삭제

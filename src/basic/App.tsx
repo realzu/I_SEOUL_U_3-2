@@ -10,7 +10,7 @@ import AdminPage from './pages/AdminPage';
 import CartPage from './pages/CartPage';
 
 const App = () => {
-  const { products, updateProduct, addProduct, setProducts } = useProducts();
+  const { products, updateProduct, addProduct, deleteProduct } = useProducts();
   const { cart, addToCart, removeFromCart, updateQuantity, clearCart } =
     useCart();
   const {
@@ -79,12 +79,12 @@ const App = () => {
           products={products}
           updateProduct={updateProduct}
           addProduct={addProduct}
-          setProducts={setProducts}
           coupons={coupons}
           addCoupon={addCoupon}
           deleteCoupon={deleteCoupon}
           addNotification={addNotification}
           notify={notify}
+          deleteProduct={deleteProduct}
         />
       ) : (
         <CartPage

@@ -62,10 +62,15 @@ export function useProducts() {
     [],
   );
 
+  const deleteProduct = useCallback((productId: string): ActionResult => {
+    setProducts((prev) => prev.filter((product) => product.id !== productId));
+    return { success: true, message: '상품이 삭제되었습니다.' };
+  }, []);
+
   return {
     products,
     updateProduct,
     addProduct,
-    setProducts,
+    deleteProduct,
   };
 }

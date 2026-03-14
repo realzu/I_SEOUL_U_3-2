@@ -78,20 +78,18 @@ export function useCart() {
   }, []);
 
   const updateQuantity = useCallback(
-    (
-      productId: string,
-      newQuantity: number,
-      products: ProductWithUI[],
-    ): ActionResult => {
+    (productId: string, newQuantity: number): ActionResult => {
       if (newQuantity <= 0) {
         removeFromCart(productId);
         return { success: true, message: '' };
       }
 
-      const product = products.find((p) => p.id === productId);
-      if (!product) return { success: false, message: '' };
+      const cartItem = cart.find((item) => item.product.id === productId);
+      if (!cartItem) {
+        return { success: false, message: '' };
+      }
 
-      const maxStock = product.stock;
+      const maxStock = cartItem.product.stock;
       if (newQuantity > maxStock) {
         return {
           success: false,
@@ -104,7 +102,7 @@ export function useCart() {
       );
       return { success: true, message: '' };
     },
-    [removeFromCart],
+    [cart, removeFromCart],
   );
 
   const clearCart = useCallback(() => {
