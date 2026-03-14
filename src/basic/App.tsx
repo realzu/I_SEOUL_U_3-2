@@ -56,7 +56,11 @@ const App = () => {
             <Toast
               key={notif.id}
               notif={notif}
-              setNotifications={setNotifications}
+              onClose={() =>
+                setNotifications((prev) =>
+                  prev.filter((n) => n.id !== notif.id),
+                )
+              }
             />
           ))}
         </div>
