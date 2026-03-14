@@ -1,11 +1,5 @@
 import { useCallback } from 'react';
-import {
-  ActionResult,
-  AddNotification,
-  CartActions,
-  CouponActions,
-  ProductActions,
-} from '../../types';
+import { ActionResult, AddNotification } from '../../types';
 import { CartIcon } from '../components/icons';
 import {
   calculateCartTotal,
@@ -15,6 +9,9 @@ import {
 import ProductCard from '../components/ui/product/ProductCard';
 import CartProduct from '../components/ui/cart/CartProduct';
 import CouponSelectbox from '../components/ui/coupon/CouponSelectbox';
+import { ProductActions } from '../hooks/useProducts';
+import { CouponActions } from '../hooks/useCoupons';
+import { CartActions } from '../hooks/useCart';
 
 interface CartPageProps {
   products: ProductActions['products'];

@@ -34,6 +34,8 @@ import {
 } from '../models/cart';
 import { useLocalStorage } from './useLocalStorage';
 
+export type CartActions = ReturnType<typeof useCart>;
+
 export function useCart() {
   const { getLocalStorageItem, setLocalStorageItem, removeLocalStorageItem } =
     useLocalStorage();

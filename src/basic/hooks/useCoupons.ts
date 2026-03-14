@@ -14,6 +14,8 @@ import { initialCoupons } from '../constants/constants';
 import { calculateCartTotal } from '../models/cart';
 import { useLocalStorage } from './useLocalStorage';
 
+export type CouponActions = ReturnType<typeof useCoupons>;
+
 export function useCoupons() {
   const { getLocalStorageItem, setLocalStorageItem } = useLocalStorage();
   const [coupons, setCoupons] = useState<Coupon[]>(() => {

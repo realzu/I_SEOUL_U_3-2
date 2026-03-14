@@ -2,15 +2,15 @@ import { useCallback, useState } from 'react';
 import {
   ActionResult,
   AddNotification,
-  CouponActions,
   Coupon,
-  ProductActions,
   ProductWithUI,
 } from '../../types';
 import CouponForm from '../components/ui/coupon/CouponForm';
 import { PlusIcon, TrashIcon } from '../components/icons';
 import { formatWon } from '../utils/formatters';
 import ProductForm from '../components/ui/product/ProductForm';
+import { ProductActions } from '../hooks/useProducts';
+import { CouponActions } from '../hooks/useCoupons';
 
 interface AdminPageProps {
   products: ProductWithUI[];

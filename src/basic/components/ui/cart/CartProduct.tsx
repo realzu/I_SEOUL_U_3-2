@@ -1,4 +1,5 @@
-import { CartActions, CartItem } from '../../../../types';
+import { CartItem } from '../../../../types';
+import { CartActions } from '../../../hooks/useCart';
 import { XIcon } from '../../icons';
 
 interface CartProductProps {

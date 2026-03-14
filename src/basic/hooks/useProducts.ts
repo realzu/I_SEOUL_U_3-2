@@ -18,6 +18,8 @@ import { ActionResult, ProductWithUI } from '../../types';
 import { initialProducts } from '../constants/constants';
 import { useLocalStorage } from './useLocalStorage';
 
+export type ProductActions = ReturnType<typeof useProducts>;
+
 export function useProducts() {
   const { getLocalStorageItem, setLocalStorageItem } = useLocalStorage();
   const [products, setProducts] = useState<ProductWithUI[]>(() => {
