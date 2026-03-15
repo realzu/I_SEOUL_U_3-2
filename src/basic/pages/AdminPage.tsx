@@ -5,12 +5,13 @@ import {
   Coupon,
   ProductWithUI,
 } from '../../types';
-import CouponForm from '../components/ui/coupon/CouponForm';
-import { PlusIcon, TrashIcon } from '../components/icons';
-import { formatWon } from '../utils/formatters';
-import ProductForm from '../components/ui/product/ProductForm';
+import CouponForm from '../components/admin/CouponForm';
+import { PlusIcon } from '../components/shared/icons';
+import ProductForm from '../components/admin/ProductForm';
 import { ProductActions } from '../hooks/useProducts';
 import { CouponActions } from '../hooks/useCoupons';
+import { AdminCouponCard } from '../components/admin/AdminCouponCard';
+import AdminProductCard from '../components/admin/AdminProductCard';
 
 interface AdminPageProps {
   products: ProductWithUI[];
@@ -140,44 +141,12 @@ function AdminPage({
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {products.map((product) => (
-                    <tr key={product.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {product.name}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {formatWon(product.price)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <span
-                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            product.stock > 10
-                              ? 'bg-green-100 text-green-800'
-                              : product.stock > 0
-                                ? 'bg-yellow-100 text-yellow-800'
-                                : 'bg-red-100 text-red-800'
-                          }`}
-                        >
-                          {product.stock}개
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">
-                        {product.description || '-'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button
-                          onClick={() => startEditProduct(product)}
-                          className="text-indigo-600 hover:text-indigo-900 mr-3"
-                        >
-                          수정
-                        </button>
-                        <button
-                          onClick={() => handleProductDelete(product.id)}
-                          className="text-red-600 hover:text-red-900"
-                        >
-                          삭제
-                        </button>
-                      </td>
-                    </tr>
+                    <AdminProductCard
+                      key={product.id}
+                      product={product}
+                      startEditProduct={() => startEditProduct(product)}
+                      onDelete={() => handleProductDelete(product.id)}
+                    />
                   ))}
                 </tbody>
               </table>
@@ -200,34 +169,11 @@ function AdminPage({
             <div className="p-6">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {coupons.map((coupon) => (
-                  <div
+                  <AdminCouponCard
                     key={coupon.code}
-                    className="relative bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg p-4 border border-indigo-200"
-                  >
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900">
-                          {coupon.name}
-                        </h3>
-                        <p className="text-sm text-gray-600 mt-1 font-mono">
-                          {coupon.code}
-                        </p>
-                        <div className="mt-2">
-                          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-white text-indigo-700">
-                            {coupon.discountType === 'amount'
-                              ? `${coupon.discountValue.toLocaleString()}원 할인`
-                              : `${coupon.discountValue}% 할인`}
-                          </span>
-                        </div>
-                      </div>
-                      <button
-                        onClick={() => notify(deleteCoupon(coupon.code))}
-                        className="text-gray-400 hover:text-red-600 transition-colors"
-                      >
-                        <TrashIcon strokeWidth={2} className="w-5 h-5" />
-                      </button>
-                    </div>
-                  </div>
+                    coupon={coupon}
+                    onDelete={() => notify(deleteCoupon(coupon.code))}
+                  />
                 ))}
 
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 flex items-center justify-center hover:border-gray-400 transition-colors">

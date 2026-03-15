@@ -1,14 +1,14 @@
 import { useCallback } from 'react';
 import { ActionResult, AddNotification } from '../../types';
-import { CartIcon } from '../components/icons';
+import { CartIcon } from '../components/shared/icons';
 import {
   calculateCartTotal,
   calculateItemTotal,
   getRemainingStock,
 } from '../models/cart';
-import ProductCard from '../components/ui/product/ProductCard';
-import CartProduct from '../components/ui/cart/CartProduct';
-import CouponSelectbox from '../components/ui/coupon/CouponSelectbox';
+import ProductCard from '../components/cart/ProductCard';
+import CartProductItem from '../components/cart/CartProductItem';
+import CartCouponSelectbox from '../components/cart/CartCouponSelectbox';
 import { ProductActions } from '../hooks/useProducts';
 import { CouponActions } from '../hooks/useCoupons';
 import { CartActions } from '../hooks/useCart';
@@ -129,7 +129,7 @@ function CartPage({
                 <div className="space-y-3">
                   {cart.map((item) => {
                     return (
-                      <CartProduct
+                      <CartProductItem
                         key={item.product.id}
                         item={item}
                         removeFromCart={removeFromCart}
@@ -156,7 +156,7 @@ function CartPage({
                     </button>
                   </div>
                   {coupons.length > 0 && (
-                    <CouponSelectbox
+                    <CartCouponSelectbox
                       value={selectedCoupon?.code || ''}
                       applyCouponAndNoti={(coupon) => {
                         notify(applyCoupon(coupon, cart));

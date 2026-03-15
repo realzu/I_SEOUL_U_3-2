@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { AddNotification, Discount, ProductWithUI } from '../../../../types';
-import { XIcon } from '../../icons';
+import { AddNotification, Discount, ProductWithUI } from '../../../types';
+import { XIcon } from '../shared/icons';
 
 interface ProductFormType {
   name: string;

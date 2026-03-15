@@ -1,6 +1,6 @@
-import { CartItem } from '../../../../types';
-import { CartActions } from '../../../hooks/useCart';
-import { XIcon } from '../../icons';
+import { CartItem } from '../../../types';
+import { CartActions } from '../../hooks/useCart';
+import { XIcon } from '../shared/icons';
 
 interface CartProductProps {
   item: CartItem;
@@ -9,7 +9,7 @@ interface CartProductProps {
   updateQuantity: (quantity: number) => void;
 }
 
-function CartProduct({
+function CartProductItem({
   item,
   itemTotal,
   removeFromCart,
@@ -67,4 +67,4 @@ function CartProduct({
   );
 }
 
-export default CartProduct;
+export default CartProductItem;

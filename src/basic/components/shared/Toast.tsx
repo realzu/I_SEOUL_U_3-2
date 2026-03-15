@@ -1,5 +1,5 @@
 import { Notification } from '../../../types';
-import { XIcon } from '../icons';
+import { XIcon } from './icons';
 
 function Toast({
   notif,

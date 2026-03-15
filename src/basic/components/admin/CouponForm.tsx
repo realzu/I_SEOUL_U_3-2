@@ -4,7 +4,7 @@ import {
   AddNotification,
   CouponActions,
   Coupon,
-} from '../../../../types';
+} from '../../../types';
 
 interface CouponFormProps {
   editingCoupon: Coupon | {};

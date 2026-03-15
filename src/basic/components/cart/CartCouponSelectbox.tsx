@@ -1,4 +1,4 @@
-import { Coupon } from '../../../../types';
+import { Coupon } from '../../../types';
 
 interface CouponSelectboxProps {
   value: string;
@@ -7,7 +7,7 @@ interface CouponSelectboxProps {
   coupons: Coupon[];
 }
 
-function CouponSelectbox({
+function CartCouponSelectbox({
   value,
   applyCouponAndNoti,
   clearSelectedCoupon,
@@ -37,4 +37,4 @@ function CouponSelectbox({
   );
 }
 
-export default CouponSelectbox;
+export default CartCouponSelectbox;

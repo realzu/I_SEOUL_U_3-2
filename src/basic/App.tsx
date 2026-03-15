@@ -1,11 +1,11 @@
 import { useState, useCallback } from 'react';
 import { ActionResult, AddNotification, Notification } from '../types';
-import Toast from './components/ui/Toast';
+import Toast from './components/shared/Toast';
 import { useCart } from './hooks/useCart';
 import { useSearch } from './hooks/useSearch';
 import { useProducts } from './hooks/useProducts';
 import { useCoupons } from './hooks/useCoupons';
-import Header from './components/ui/Header';
+import Header from './components/shared/Header';
 import AdminPage from './pages/AdminPage';
 import CartPage from './pages/CartPage';
 
