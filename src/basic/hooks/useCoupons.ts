@@ -50,7 +50,6 @@ export function useCoupons() {
     if (hasExistingCoupon) {
       return { success: false, message: '이미 존재하는 쿠폰 코드입니다.' };
     }
-    setCoupons((prev) => [...prev, newCoupon]);
     return { success: true, message: '쿠폰이 추가되었습니다.' };
   }, []);
 
