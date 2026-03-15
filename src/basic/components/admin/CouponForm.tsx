@@ -1,10 +1,6 @@
 import { useEffect, useState } from 'react';
-import {
-  ActionResult,
-  AddNotification,
-  CouponActions,
-  Coupon,
-} from '../../../types';
+import { ActionResult, AddNotification, Coupon } from '../../../types';
+import { CouponActions } from '../../hooks/useCoupons';
 
 interface CouponFormProps {
   editingCoupon: Coupon | {};
