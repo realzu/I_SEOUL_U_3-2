@@ -1,0 +1,38 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # main 브랜치에 코드가 올라갈 때마다 실행됩니다.
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # gh-pages 브랜치에 쓰기 권한 부여
+
+    steps:
+      - name: 1. 저장소 코드 가져오기
+        uses: actions/checkout@v4
+
+      - name: 2. pnpm 세팅하기
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
+
+      - name: 3. Node.js 환경 세팅하기
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 4. 패키지 설치
+        run: pnpm install
+
+      - name: 5. 프로젝트 빌드 (dist 폴더 생성)
+        run: pnpm run build
+
+      - name: 6. GitHub Pages로 배포 (peaceiris 사용)
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist # 빌드된 결과물 폴더만 쏙 빼서 배포합니다.
