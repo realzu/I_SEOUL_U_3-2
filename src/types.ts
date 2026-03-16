@@ -1,7 +1,3 @@
-import { useCart } from './basic/hooks/useCart';
-import { useCoupons } from './basic/hooks/useCoupons';
-import { useProducts } from './basic/hooks/useProducts';
-
 export interface Product {
   id: string;
   name: string;
