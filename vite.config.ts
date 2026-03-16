@@ -6,6 +6,11 @@ export default mergeConfig(
   defineConfig({
     plugins: [react()],
     base: '/I_SEOUL_U_3-2/',
+    build: {
+      rollupOptions: {
+        input: './index.basic.html',
+      },
+    },
   }),
   defineTestConfig({
     test: {
